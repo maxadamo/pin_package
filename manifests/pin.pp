@@ -70,7 +70,7 @@ define pin_package::pin (
         '8'     => 'python3-dnf-plugin-versionlock',
         default => 'yum-plugin-versionlock'
       }
-      version_lock { $pinpackage:
+      pin_package::version_lock { $pinpackage:
         pkg_name    => $pinpackage,
         pkg_status  => $pinstatus,
         epoch       => $epoch,
