@@ -6,7 +6,7 @@
 1. [Usage](#usage)
     * [Pinning](#pinning)
     * [Unpinning](#unpinning)
-    * [Mutual dependency loop](#mutual-dependency-loop)
+    * [Mutual dependencies handling](#mutual-dependencies-handling)
 1. [Limitations](#limitations)
 1. [Development](#development)
 
@@ -35,7 +35,7 @@ pin_package::pin { 'apache':
 }
 ```
 
-### Mutual dependency loop
+### Mutual dependencies handling
 
 If you have mutual dependencies issues, you can set `pin_only` to `true`, and you use
 the `package` resource with `require` against pin_package define. Example:
