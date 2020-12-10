@@ -12,7 +12,7 @@
 
 ## Description
 
-This module force packages pinning on Debian and RedHat based distribution (Debian, Ubuntu, RedHat, CentOS...).
+This module installs packages and forces version pinning on Debian and RedHat based distribution (Debian, Ubuntu, RedHat, CentOS...).
 
 Pinned packages cannot be upgraded, unless they're unpinned or their version number is changed.
 
@@ -54,6 +54,7 @@ package { ['salt-minion', 'salt-common']:
 ## Limitations
 
 * only Debian/RedHat families are supported: Debian, Ubuntu, RedHat, CentOS...
+* no test available
 
 ## Development
 
