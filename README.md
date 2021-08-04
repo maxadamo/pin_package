@@ -3,6 +3,7 @@
 #### Table of Contents
 
 1. [Description](#description)
+1. [Notes on this version](#notes-on-this-version)
 1. [Usage](#usage)
     * [Pinning](#pinning)
     * [Unpinning](#unpinning)
@@ -15,6 +16,10 @@
 This module installs packages and forces version pinning on Debian and RedHat based distribution (Debian, Ubuntu, RedHat, CentOS...).
 
 Pinned packages cannot be upgraded, unless they're unpinned or their version number is changed.
+
+## Notes on this version
+
+This is a transition version, where you can use either `pin_package` or `pin_package::pin`. The latter will be removed in the coming version.
 
 ## Usage
 
