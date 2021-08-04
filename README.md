@@ -19,14 +19,14 @@ Pinned packages cannot be upgraded, unless they're unpinned or their version num
 
 ## Notes on this version
 
-This is a transition version, where you can use either `pin_package` or `pin_package::pin`. The latter will be removed in the coming version.
+This is a transitioning version and you can still use `pin_package` or `pin_package::pin`. The latter will be removed in the coming version.
 
 ## Usage
 
 ### Pinning
 
 ```puppet
-pin_package::pin { 'apache':
+pin_package { 'apache':
   ensure => '0.5-40';
 }
 ```
@@ -34,7 +34,7 @@ pin_package::pin { 'apache':
 ### Unpinning
 
 ```puppet
-pin_package::pin { 'apache':
+pin_package { 'apache':
   ensure => '0.5-40',
   unpin  => true;
 }
@@ -42,17 +42,17 @@ pin_package::pin { 'apache':
 
 ### Mutual dependencies handling
 
-If you have mutual dependencies issues, you can set `pin_only` to `true`, and you use the `package` resource with `require` against pin_package define. Example:
+If you have mutual dependencies issues or if your module leverages the package installation, you can set `pin_only` to `true`, and you use the `package` resource with `require` against `pin_package` define. Example:
 
 ```puppet
-pin_package::pin { ['salt-minion', 'salt-common']:
+pin_package { ['salt-minion', 'salt-common']:
   ensure   => $my_version,
   pin_only => true;
 }
 
 package { ['salt-minion', 'salt-common']:
   ensure  => $my_version,  # you can also use latest here, because you have already pinned
-  require => Pin_package::Pin['salt-minion', 'salt-common'];
+  require => Pin_package['salt-minion', 'salt-common'];
 }
 ```
 

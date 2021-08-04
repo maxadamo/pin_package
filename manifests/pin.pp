@@ -1,47 +1,7 @@
 # == Define: pin_package::pin
 #
-# This module is used to pin/unpin a specific package version.
-# If you pin a package version, "yum update" won't update that package
-#
-# === Parameters
-#
-# [*pin_package*]: the package name
-# [*ensure*]: version to pin
-#
-# === Requires
-#
-# Nothing.
-#
-# === Examples
-#
-#  to pin a package:
-#
-#  pin_package::pin { 'apache':
-#    ensure => '0.5-40';
-#  }
-#
-#  to unpin a previously pinned package. You need to re-use the last used
-#  version (unfrotunately 'file_line' can match, but cannot delete only with
-#  match) and use whatever value (true, yes, ok, wow, boom):
-#
-#  pin_package::pin { 'apache':
-#    ensure => '0.5-40',
-#    unpin  => true;
-#  }
-#
-#  If you have mutual dependencies issues, you set pin_only to true, and you use
-#  the package resource with "require" against pin_package define. Example:
-#
-#  pin_package::pin { ['salt-minion', 'salt-common']:
-#    ensure => $my_version,
-#    pin_only  => true;
-#  }
-#
-#  package { ['salt-minion', 'salt-common']:
-#    ensure  => $my_version,  # you could also use latest here, because you have already pinned
-#    require => Pin_package::Pin['salt-minion', 'salt-common'];
-#  }
-#
+# THIS IS OBSOLETE AND IT WILL BE REMOVED. 
+# Please use init.pp instead. 
 #
 define pin_package::pin (
   Optional[String] $ensure,
