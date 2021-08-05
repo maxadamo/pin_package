@@ -45,7 +45,8 @@
 #
 define pin_package (
   Optional[String] $ensure,
-  Integer $epoch                                = 0, # RedHat family only
+  Integer $epoch                                = 0,     # RedHat family only
+  Boolean $install_version_lock_package         = true,  # RedHat family only
   $pinpackage                                   = $name,
   Boolean $unpin                                = false,
   Boolean $pin_only                             = false,
@@ -66,9 +67,14 @@ define pin_package (
 
   case $facts['os']['name'] {
     'RedHat', 'CentOS': {
-      $version_lock_pkg = $facts['os']['release']['major'] ? {
+      $version_lock_package = $facts['os']['release']['major'] ? {
         '8'     => 'python3-dnf-plugin-versionlock',
         default => 'yum-plugin-versionlock'
+      }
+      if any2bool($install_version_lock_package) {
+        unless defined(Package[$version_lock_package]) {
+          package { $version_lock_package: ensure => present; }
+        }
       }
       pin_package::version_lock { $pinpackage:
         pkg_name    => $pinpackage,
@@ -77,7 +83,7 @@ define pin_package (
         pkg_version => $ensure,
         pin_only    => $pin_only,
         arch        => $arch,
-        require     => Package[$version_lock_pkg];
+        require     => Package[$version_lock_package];
       }
     }
     /^(Debian|Ubuntu)$/: {
