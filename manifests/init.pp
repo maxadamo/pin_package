@@ -44,13 +44,15 @@
 #
 #
 define pin_package (
-  Optional[String] $ensure,
-  Integer $epoch                                = 0,     # RedHat family only
-  Boolean $install_version_lock_package         = true,  # RedHat family only
-  $pinpackage                                   = $name,
-  Boolean $unpin                                = false,
-  Boolean $pin_only                             = false,
-  Optional[Enum['*', 'x86_64', 'noarch']] $arch = '*',
+  String $ensure,
+  $pinpackage                           = $name,
+  Boolean $unpin                        = false,
+  Boolean $pin_only                     = false,
+  Enum['*', 'x86_64', 'noarch'] $arch   = '*',
+
+  # RedHat family only
+  Integer $epoch                        = 0,
+  Boolean $install_version_lock_package = true,
 ) {
 
   # latest is, in fact, same as unpinning and purge and absent
@@ -67,23 +69,14 @@ define pin_package (
 
   case $facts['os']['name'] {
     'RedHat', 'CentOS': {
-      $version_lock_package = $facts['os']['release']['major'] ? {
-        '8'     => 'python3-dnf-plugin-versionlock',
-        default => 'yum-plugin-versionlock'
-      }
-      if any2bool($install_version_lock_package) {
-        unless defined(Package[$version_lock_package]) {
-          package { $version_lock_package: ensure => present; }
-        }
-      }
-      pin_package::version_lock { $pinpackage:
-        pkg_name    => $pinpackage,
-        pkg_status  => $pinstatus,
-        epoch       => $epoch,
-        pkg_version => $ensure,
-        pin_only    => $pin_only,
-        arch        => $arch,
-        require     => Package[$version_lock_package];
+      pin_package::redhat_version_lock { $pinpackage:
+        pkg_name                     => $pinpackage,
+        pkg_status                   => $pinstatus,
+        epoch                        => $epoch,
+        pkg_version                  => $ensure,
+        pin_only                     => $pin_only,
+        arch                         => $arch,
+        install_version_lock_package => $install_version_lock_package;
       }
     }
     /^(Debian|Ubuntu)$/: {

@@ -1,19 +1,31 @@
-# == Define: pin_package::version_lock
+# == Define: pin_package::redhat_version_lock
 #
 # This module is run only from pin_package
 #
-define pin_package::version_lock (
+define pin_package::redhat_version_lock (
   $pkg_name,
   $epoch,
   $pkg_status,
   $pkg_version,
   $pin_only,
-  $arch
+  $arch,
+  $install_version_lock_package
 ) {
 
   assert_private("this define is intended to be called only within ${module_name}")
 
   if $pkg_status == 'absent' { $replace = false } else { $replace = true }
+
+  $version_lock_package = $facts['os']['release']['major'] ? {
+    '8'     => 'python3-dnf-plugin-versionlock',
+    default => 'yum-plugin-versionlock'
+  }
+
+  if any2bool($install_version_lock_package) {
+    unless defined(Package[$version_lock_package]) {
+      package { $version_lock_package: ensure => present; }
+    }
+  }
 
   if $facts['os']['release']['major'] == '8' {
     file_line { $pkg_name:
@@ -21,7 +33,7 @@ define pin_package::version_lock (
       path              => '/etc/dnf/plugins/versionlock.list',
       line              => "${pkg_name}-${epoch}:${pkg_version}.${arch}",
       match             => "^${pkg_name}-${epoch}:(\\d)",
-      require           => Package['python3-dnf-plugin-versionlock'],
+      require           => Package[$version_lock_package],
       notify            => Exec["clean_expire_cache_${module_name}_${pkg_name}"],
       match_for_absence => true,
       replace           => $replace;
@@ -32,7 +44,7 @@ define pin_package::version_lock (
       path              => '/etc/yum/pluginconf.d/versionlock.list',
       line              => "${epoch}:${pkg_name}-${pkg_version}.${arch}",
       match             => "^${epoch}:${pkg_name}-(\\d)",
-      require           => Package['yum-plugin-versionlock'],
+      require           => Package[$version_lock_package],
       notify            => Exec["clean_expire_cache_${module_name}_${pkg_name}"],
       match_for_absence => true,
       replace           => $replace;
