@@ -1,6 +1,6 @@
 {
   "name": "maxadamo-pin_package",
-  "version": "0.3.1",
+  "version": "0.5.0",
   "author": "maxadamo",
   "summary": "Package Pinning for RHEL and Debian based Distributions",
   "license": "GPL-3.0",
