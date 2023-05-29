@@ -2,16 +2,38 @@
 #
 # This module is run only from pin_package
 #
+# === Parameters
+#
+# [*pkg_name*]
+#   The name of the package to pin
+#
+# [*epoch*]
+#   The epoch of the package to pin
+#
+# [*pkg_status*]
+#   The status of the package to pin
+#
+# [*pkg_version*]
+#   The version of the package to pin
+#
+# [*pin_only*]
+#   Whether to pin only or also install the package
+#
+# [*arch*]
+#   The architecture of the package to pin
+#
+# [*install_version_lock_package*]
+#   Whether to install the versionlock package
+#
 define pin_package::redhat_version_lock (
-  $pkg_name,
-  $epoch,
-  $pkg_status,
-  $pkg_version,
-  $pin_only,
-  $arch,
-  $install_version_lock_package
+  String $pkg_name,
+  Integer $epoch,
+  String $pkg_status,
+  String $pkg_version,
+  Boolean $pin_only,
+  String $arch,
+  Boolean $install_version_lock_package
 ) {
-
   assert_private("this define is intended to be called only within ${module_name}")
 
   if $pkg_status == 'absent' { $replace = false } else { $replace = true }
@@ -64,6 +86,5 @@ define pin_package::redhat_version_lock (
       require => Exec["clean_expire_cache_${module_name}_${pkg_name}"];
     }
   }
-
 }
 # vim:ts=2:sw=2

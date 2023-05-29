@@ -5,8 +5,31 @@
 #
 # === Parameters
 #
-# [*pin_package*]: the package name
-# [*ensure*]: version to pin
+# [*ensure*]
+#   The version to pin. If you use 'latest', it will unpin the package
+#   and remove it.
+#
+# [*pinpackage*]
+#   the package name
+#
+# [*unpin*]
+#  if set to true, it will unpin the package and remove it.
+#
+# [*pin_only*]
+#  if set to true, it will only pin the package, but not install it.
+#  This is useful if you have mutual dependencies issues.
+#
+# [*allow_downgrade*]
+#  if set to false, it will not allow downgrades. Default is true.
+#
+# [*arch*]
+#  the architecture to pin. Default is '*'
+#
+# [*epoch*]
+#  the epoch to pin. Default is 0
+#
+# [*install_version_lock_package*]
+#  if set to true, it will install the yum-versionlock package. Default is true.
 #
 # === Requires
 #
@@ -45,16 +68,16 @@
 #
 define pin_package (
   String $ensure,
-  $pinpackage                           = $name,
+  String $pinpackage                    = $name,
   Boolean $unpin                        = false,
   Boolean $pin_only                     = false,
   Enum['*', 'x86_64', 'noarch'] $arch   = '*',
-
   # RedHat family only
   Integer $epoch                        = 0,
   Boolean $install_version_lock_package = true,
+  # Debian family only
+  Boolean $allow_downgrade              = true,
 ) {
-
   # latest is, in fact, same as unpinning and purge and absent
   # means unpin and remove the package
   if $ensure in ['latest', 'purged', 'absent', 'present'] {
@@ -93,8 +116,9 @@ define pin_package (
       }
       unless any2bool($pin_only) {
         package { $pinpackage:
-          ensure  => $ensure,
-          require => [
+          ensure          => $ensure,
+          install_options => ['--allow-downgrades'],
+          require         => [
             File["/etc/apt/preferences.d/pin_${pinpackage}.pref"],
             Exec['apt_update'],
           ];
@@ -105,6 +129,5 @@ define pin_package (
       fail("${facts['os']['name']} not yet supported")
     }
   }
-
 }
 # vim:ts=2:sw=2
