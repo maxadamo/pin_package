@@ -3,7 +3,6 @@
 #### Table of Contents
 
 1. [Description](#description)
-1. [Notes on this version](#notes-on-this-version)
 1. [Usage](#usage)
     * [Pinning](#pinning)
     * [Unpinning](#unpinning)
@@ -16,10 +15,6 @@
 This module installs packages and forces version pinning on Debian and RedHat based distribution (Debian, Ubuntu, RedHat, CentOS...).
 
 Pinned packages cannot be upgraded, unless they're unpinned or their version number is changed.
-
-## Notes on this version
-
-This is a transitioning version and you can still use `pin_package` or `pin_package::pin`. The latter will be removed in the coming version.
 
 ## Usage
 
@@ -40,6 +35,8 @@ pin_package { 'apache':
 }
 ```
 
+Setting the version number to `latest` aalso removes the pinning.
+
 ### Mutual dependencies handling
 
 If you have mutual dependencies issues or if your module leverages the package installation, you can set `pin_only` to `true`, and you use the `package` resource with `require` against `pin_package` define. Example:
@@ -59,7 +56,7 @@ package { ['salt-minion', 'salt-common']:
 ## Limitations
 
 * only Debian/RedHat families are supported: Debian, Ubuntu, RedHat, CentOS...
-* no test available
+* no test available [not much to test: the module is simple]
 
 ## Development
 
